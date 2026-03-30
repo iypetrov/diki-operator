@@ -67,6 +67,13 @@ func SetDefaults_ServerConfiguration(obj *ServerConfiguration) {
 	}
 }
 
+// SetDefaults_HTTPSServer sets defaults for the HTTPSServer object.
+func SetDefaults_HTTPSServer(obj *HTTPSServer) {
+	if obj.Port == 0 {
+		obj.Port = 10443
+	}
+}
+
 // SetDefaults_LeaderElectionConfiguration sets defaults for the LeaderElectionConfiguration object.
 func SetDefaults_LeaderElectionConfiguration(obj *componentbaseconfigv1alpha1.LeaderElectionConfiguration) {
 	if obj.ResourceLock == "" {

@@ -8,9 +8,7 @@ metadata:
   name: diki-operator
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: diki-operator
-    helm.sh/chart: diki-operator
-    app.kubernetes.io/instance: {{ .Release.Name }}
+{{ include "labels" . | indent 4 }}
 spec:
   revisionHistoryLimit: 2
   replicas: {{ .Values.replicaCount }}
@@ -45,6 +43,9 @@ spec:
         - name: metrics
           containerPort: {{ .Values.config.server.metrics.port }}
           protocol: TCP
+        - name: https
+          containerPort: {{ .Values.config.server.webhooks.port }}
+          protocol: TCP
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -54,6 +55,9 @@ spec:
         volumeMounts:
         - name: diki-operator-config
           mountPath: /etc/diki-operator/config
+          readOnly: true
+        - name: diki-operator-tls
+          mountPath: /etc/diki-operator/webhooks/tls
           readOnly: true
         livenessProbe:
           httpGet:
@@ -76,3 +80,7 @@ spec:
         configMap:
           defaultMode: 0440
           name: diki-operator
+      - name: diki-operator-tls
+        secret:
+          defaultMode: 0440
+          secretName: diki-operator-tls

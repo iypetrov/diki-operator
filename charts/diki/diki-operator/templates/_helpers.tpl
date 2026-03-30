@@ -1,9 +1,22 @@
-{{- define "name" -}}
+{{- define "diki-operator.name" -}}
 diki-operator
 {{- end -}}
 
 {{- define "leaderelectionid" -}}
 diki-operator-leader-election
+{{- end -}}
+
+{{- define "labels.app.key" -}}
+app.kubernetes.io/name
+{{- end -}}
+{{- define "labels.app.value" -}}
+{{- include "diki-operator.name" . }}
+{{- end -}}
+
+{{- define "labels" -}}
+{{- include "labels.app.key" . }}: {{ include "labels.app.value" . }}
+helm.sh/chart: {{ include "labels.app.value" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{-  define "image" -}}
@@ -50,6 +63,10 @@ server:
     bindAddress: {{ .Values.config.server.metrics.bindAddress }}
     {{- end }}
     port: {{ .Values.config.server.metrics.port }}
+  webhooks:
+    port: {{ .Values.config.server.webhooks.port }}
+    tls:
+      serverCertDir: /etc/diki-operator/webhooks/tls
 leaderElection:
   resourceName: {{ include "leaderelectionid" . }}
   resourceNamespace: {{ .Release.Namespace }}

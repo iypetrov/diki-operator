@@ -180,6 +180,30 @@ var _ = Describe("Defaults", func() {
 		})
 	})
 
+	Describe("#SetDefaults_HTTPSServer", func() {
+		var obj *HTTPSServer
+
+		BeforeEach(func() {
+			obj = &HTTPSServer{}
+		})
+
+		Context("Port", func() {
+			It("should default port", func() {
+				SetDefaults_HTTPSServer(obj)
+
+				Expect(obj.Port).To(Equal(int32(10443)))
+			})
+
+			It("should not overwrite already set value for port", func() {
+				obj.Port = 9090
+
+				SetDefaults_HTTPSServer(obj)
+
+				Expect(obj.Port).To(Equal(int32(9090)))
+			})
+		})
+	})
+
 	Describe("#SetDefaults_LeaderElectionConfiguration", func() {
 		var obj *componentbaseconfigv1alpha1.LeaderElectionConfiguration
 
